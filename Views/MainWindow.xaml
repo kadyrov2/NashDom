@@ -1,0 +1,1414 @@
+﻿<Window x:Class="NashDom.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:NashDom.Converters"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
+        Title="🏠 ТСЖ Наш Дом - Управление многоквартирным домом" 
+        Height="900" Width="1400"
+        WindowStartupLocation="CenterScreen"
+        Loaded="Window_Loaded"
+        Background="#F5F7FA">
+
+    <Window.Resources>
+        <!-- Тени для карточек -->
+        <DropShadowEffect x:Key="ShadowEffect" 
+                          BlurRadius="10" 
+                          ShadowDepth="2" 
+                          Opacity="0.1" 
+                          Color="Black"/>
+
+        <DropShadowEffect x:Key="ShadowEffectHover" 
+                          BlurRadius="15" 
+                          ShadowDepth="3" 
+                          Opacity="0.15" 
+                          Color="Black"/>
+
+        <!-- Стили для кнопок -->
+        <Style x:Key="PrimaryButton" TargetType="Button">
+            <Setter Property="Background" Value="#007ACC"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Padding" Value="12,8"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" 
+                                CornerRadius="6" 
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" 
+                                              VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#005A9E"/>
+                    <Setter Property="Effect" Value="{StaticResource ShadowEffectHover}"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="SecondaryButton" TargetType="Button">
+            <Setter Property="Background" Value="#6C757D"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Padding" Value="12,8"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" 
+                                CornerRadius="6" 
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" 
+                                              VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#5A6268"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="SuccessButton" TargetType="Button" BasedOn="{StaticResource PrimaryButton}">
+            <Setter Property="Background" Value="#28A745"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#218838"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="DangerButton" TargetType="Button">
+            <Setter Property="Background" Value="#DC3545"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Padding" Value="8,5"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" 
+                                CornerRadius="4" 
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" 
+                                              VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#C82333"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="AccentButton" TargetType="Button" BasedOn="{StaticResource PrimaryButton}">
+            <Setter Property="Background" Value="#2C3E50"/>
+        </Style>
+
+        <Style x:Key="InfoButton" TargetType="Button" BasedOn="{StaticResource PrimaryButton}">
+            <Setter Property="Background" Value="#3B82F6"/>
+        </Style>
+
+        <Style x:Key="IconButton" TargetType="Button" BasedOn="{StaticResource SecondaryButton}">
+            <Setter Property="Padding" Value="8,8"/>
+            <Setter Property="Width" Value="32"/>
+            <Setter Property="Height" Value="32"/>
+            <Setter Property="FontSize" Value="14"/>
+        </Style>
+
+        <!-- Стиль для заголовков секций -->
+        <Style x:Key="SectionHeader" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Foreground" Value="#2C3E50"/>
+            <Setter Property="Margin" Value="0,0,0,15"/>
+        </Style>
+
+        <!-- Стиль для заголовков карточек -->
+        <Style x:Key="CardHeader" TargetType="Border">
+            <Setter Property="Background" Value="#2C3E50"/>
+            <Setter Property="CornerRadius" Value="8,8,0,0"/>
+            <Setter Property="Padding" Value="15,12"/>
+        </Style>
+
+        <!-- Стиль для DataGrid -->
+        <Style TargetType="DataGrid">
+            <Setter Property="BorderBrush" Value="#E5E7EB"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="RowBackground" Value="White"/>
+            <Setter Property="AlternatingRowBackground" Value="#F9FAFB"/>
+            <Setter Property="GridLinesVisibility" Value="Horizontal"/>
+            <Setter Property="HeadersVisibility" Value="Column"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="RowHeight" Value="35"/>
+            <Setter Property="CanUserAddRows" Value="False"/>
+            <Setter Property="CanUserDeleteRows" Value="False"/>
+        </Style>
+
+        <!-- Стиль для заголовков колонок DataGrid -->
+        <Style TargetType="DataGridColumnHeader">
+            <Setter Property="Background" Value="#F3F4F6"/>
+            <Setter Property="Foreground" Value="#1F2937"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Padding" Value="10,12"/>
+            <Setter Property="BorderBrush" Value="#E5E7EB"/>
+            <Setter Property="BorderThickness" Value="0,0,1,1"/>
+        </Style>
+
+        <!-- Стиль для ячеек DataGrid -->
+        <Style TargetType="DataGridCell">
+            <Setter Property="Padding" Value="10,5"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Style.Triggers>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Background" Value="#E8F4FD"/>
+                    <Setter Property="Foreground" Value="#1F2937"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- Стиль для TextBox -->
+        <Style TargetType="TextBox">
+            <Setter Property="BorderBrush" Value="#D1D5DB"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="8,6"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Background" Value="White"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="BorderBrush" Value="#007ACC"/>
+                </Trigger>
+                <Trigger Property="IsFocused" Value="True">
+                    <Setter Property="BorderBrush" Value="#007ACC"/>
+                    <Setter Property="BorderThickness" Value="2"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- Стиль для DatePicker -->
+        <Style x:Key="ModernDatePicker" TargetType="DatePicker">
+            <Setter Property="BorderBrush" Value="#D1D5DB"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="8,6"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Background" Value="White"/>
+        </Style>
+
+        <Style TargetType="DatePicker">
+            <Setter Property="BorderBrush" Value="#D1D5DB"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="8,6"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Background" Value="White"/>
+        </Style>
+
+        <!-- Стиль для TabControl -->
+        <Style TargetType="TabControl">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+        </Style>
+
+        <Style TargetType="TabItem">
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Padding" Value="20,12"/>
+            <Setter Property="Background" Value="#F3F4F6"/>
+            <Setter Property="Foreground" Value="#6B7280"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TabItem">
+                        <Border Name="Border" 
+                                Background="{TemplateBinding Background}" 
+                                BorderThickness="0"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter x:Name="ContentSite"
+                                              VerticalAlignment="Center"
+                                              HorizontalAlignment="Center"
+                                              ContentSource="Header"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="Border" Property="Background" Value="White"/>
+                                <Setter Property="Foreground" Value="#007ACC"/>
+                                <Setter Property="FontWeight" Value="Bold"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Foreground" Value="#007ACC"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Стиль для ScrollViewer -->
+        <Style TargetType="ScrollViewer">
+            <Setter Property="Background" Value="Transparent"/>
+        </Style>
+
+        <!-- Стиль для ComboBox -->
+        <Style TargetType="ComboBox">
+            <Setter Property="BorderBrush" Value="#D1D5DB"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="8,6"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Background" Value="White"/>
+        </Style>
+
+        <!-- Стиль для Expander -->
+        <Style TargetType="Expander">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="BorderBrush" Value="#E5E7EB"/>
+            <Setter Property="BorderThickness" Value="1"/>
+        </Style>
+
+        <!-- Стиль для GroupBox -->
+        <Style TargetType="GroupBox">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="BorderBrush" Value="#E5E7EB"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            
+            <Setter Property="Margin" Value="0,5"/>
+            <Setter Property="Padding" Value="10"/>
+        </Style>
+
+        <!-- Конвертеры -->
+        <local:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+        <local:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
+        <local:StatusConverter x:Key="StatusConverter"/>
+    </Window.Resources>
+
+    <Grid Margin="10">
+        <TabControl Background="White" BorderThickness="0" SelectionChanged="TabControl_SelectionChanged">
+
+            <!-- ========== ВКЛАДКА 1: КВАРТИРЫ ========== -->
+            <TabItem Header="🏠 Квартиры" FontSize="14" FontWeight="SemiBold">
+                <Grid Margin="10">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- Панель фильтрации -->
+                    <Border Grid.Row="0" 
+                            Background="White" 
+                            CornerRadius="8" 
+                            BorderBrush="#E0E4E8" 
+                            BorderThickness="1"
+                            Padding="15" 
+                            Margin="0,0,0,15">
+                        <WrapPanel>
+                            <TextBlock Text="🔍 Фильтр:" 
+                                       VerticalAlignment="Center" 
+                                       FontWeight="Bold" 
+                                       FontSize="14"
+                                       Margin="0,0,15,0"/>
+
+                            <Border Background="#F0F2F5" CornerRadius="5" Padding="8,0" Margin="0,0,10,0">
+                                <ComboBox x:Name="EntranceFilterMain" 
+                                          Width="120" 
+                                          Height="32"
+                                          BorderThickness="0"
+                                          Background="Transparent"
+                                          SelectionChanged="Filter_SelectionChanged">
+                                    <ComboBoxItem Content="Все подъезды" IsSelected="True"/>
+                                    <ComboBoxItem Content="Подъезд 1"/>
+                                    <ComboBoxItem Content="Подъезд 2"/>
+                                    <ComboBoxItem Content="Подъезд 3"/>
+                                    <ComboBoxItem Content="Подъезд 4"/>
+                                    <ComboBoxItem Content="Подъезд 5"/>
+                                    <ComboBoxItem Content="Подъезд 6"/>
+                                    <ComboBoxItem Content="Подъезд 7"/>
+                                </ComboBox>
+                            </Border>
+
+                            <Border Background="#F0F2F5" CornerRadius="5" Padding="8,0">
+                                <ComboBox x:Name="FloorFilterMain" 
+                                          Width="120" 
+                                          Height="32"
+                                          BorderThickness="0"
+                                          Background="Transparent"
+                                          SelectionChanged="Filter_SelectionChanged">
+                                    <ComboBoxItem Content="Все этажи" IsSelected="True"/>
+                                    <ComboBoxItem Content="Этаж 1"/>
+                                    <ComboBoxItem Content="Этаж 2"/>
+                                    <ComboBoxItem Content="Этаж 3"/>
+                                    <ComboBoxItem Content="Этаж 4"/>
+                                    <ComboBoxItem Content="Этаж 5"/>
+                                    <ComboBoxItem Content="Этаж 6"/>
+                                    <ComboBoxItem Content="Этаж 7"/>
+                                    <ComboBoxItem Content="Этаж 8"/>
+                                    <ComboBoxItem Content="Этаж 9"/>
+                                </ComboBox>
+                            </Border>
+                        </WrapPanel>
+                    </Border>
+
+                    <!-- Контент -->
+                    <Grid Grid.Row="1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="300"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <!-- Список квартир -->
+                        <Border Grid.Column="0" 
+                                Background="White" 
+                                CornerRadius="8" 
+                                BorderBrush="#E0E4E8" 
+                                BorderThickness="1"
+                                Margin="0,0,10,0">
+                            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                                <ListBox x:Name="ApartmentsListMain" 
+                                         Background="Transparent"
+                                         BorderThickness="0">
+                                    <ListBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <Border BorderBrush="#F0F0F0" BorderThickness="0,0,0,1" Padding="12,10">
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="60"/>
+                                                        <ColumnDefinition Width="*"/>
+                                                    </Grid.ColumnDefinitions>
+
+                                                    <Border Grid.Column="0" 
+                                                            Width="45" Height="45" 
+                                                            CornerRadius="12"
+                                                            Background="#E8F4FD"
+                                                            HorizontalAlignment="Left"
+                                                            VerticalAlignment="Center">
+                                                        <TextBlock Text="🏢" 
+                                                                   FontSize="22" 
+                                                                   HorizontalAlignment="Center"
+                                                                   VerticalAlignment="Center"/>
+                                                    </Border>
+
+                                                    <StackPanel Grid.Column="1" Margin="10,0,0,0">
+                                                        <TextBlock FontSize="15" FontWeight="SemiBold" Foreground="#2C3E50">
+                                                            <Run Text="Кв. "/><Run Text="{Binding ApartmentNumber}"/>
+                                                        </TextBlock>
+                                                        <TextBlock Text="{Binding FullName}" 
+                                                                   FontSize="11" 
+                                                                   Foreground="#7F8C8D"
+                                                                   TextTrimming="CharacterEllipsis"
+                                                                   Margin="0,3,0,0"/>
+                                                        <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
+                                                            <TextBlock FontSize="10" Foreground="#95A5A6">
+                                                                <Run Text="📍 "/><Run Text="{Binding Entrance}"/> подъезд
+                                                            </TextBlock>
+                                                            <TextBlock FontSize="10" Foreground="#95A5A6" Margin="10,0,0,0">
+                                                                <Run Text="🏢 "/><Run Text="{Binding Floor}"/> этаж
+                                                            </TextBlock>
+                                                        </StackPanel>
+                                                    </StackPanel>
+                                                </Grid>
+                                            </Border>
+                                        </DataTemplate>
+                                    </ListBox.ItemTemplate>
+                                    <ListBox.ItemContainerStyle>
+                                        <Style TargetType="ListBoxItem">
+                                            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                                            <Setter Property="Padding" Value="0"/>
+                                            <Setter Property="Background" Value="Transparent"/>
+                                            <Style.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter Property="Background" Value="#F5F7FA"/>
+                                                </Trigger>
+                                                <Trigger Property="IsSelected" Value="True">
+                                                    <Setter Property="Background" Value="#E3F2FD"/>
+                                                </Trigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </ListBox.ItemContainerStyle>
+                                </ListBox>
+                            </ScrollViewer>
+                        </Border>
+
+                        <!-- Детали квартиры -->
+                        <ScrollViewer Grid.Column="1" VerticalScrollBarVisibility="Auto">
+                            <StackPanel>
+                                <!-- Карточка квартиры с заголовком -->
+                                <Border CornerRadius="12" Margin="0,0,0,15">
+                                    <Border.Background>
+                                        <LinearGradientBrush EndPoint="1,0" StartPoint="0,0">
+                                            <GradientStop Color="#2196F3" Offset="0"/>
+                                            <GradientStop Color="#1976D2" Offset="1"/>
+                                        </LinearGradientBrush>
+                                    </Border.Background>
+
+                                    <StackPanel Margin="20">
+                                        <TextBlock Text="🏠 ИНФОРМАЦИЯ О КВАРТИРЕ" 
+                                                   Foreground="White" 
+                                                   FontSize="14" 
+                                                   FontWeight="SemiBold"
+                                                   Opacity="0.9"/>
+                                        <TextBlock FontSize="28" 
+                                                   FontWeight="Bold" 
+                                                   Foreground="White">
+                                            <Run Text="Квартира "/>
+                                            <Run Text="{Binding SelectedApartment.ApartmentNumber, FallbackValue='___'}"/>
+                                        </TextBlock>
+
+                                        <WrapPanel Margin="0,10,0,0">
+                                            <Border Background="White" CornerRadius="15" Padding="10,5" Margin="0,0,10,0">
+                                                <StackPanel Orientation="Horizontal">
+                                                    <TextBlock Text="🚪 " Foreground="#1976D2" FontSize="14"/>
+                                                    <TextBlock Text="Подъезд " Foreground="#666" FontSize="12"/>
+                                                    <TextBlock Text="{Binding SelectedApartment.Entrance, FallbackValue='_'}" 
+                                                               Foreground="#1976D2" FontSize="14" FontWeight="Bold"/>
+                                                </StackPanel>
+                                            </Border>
+                                            <Border Background="White" CornerRadius="15" Padding="10,5">
+                                                <StackPanel Orientation="Horizontal">
+                                                    <TextBlock Text="📌 " Foreground="#1976D2" FontSize="14"/>
+                                                    <TextBlock Text="Этаж " Foreground="#666" FontSize="12"/>
+                                                    <TextBlock Text="{Binding SelectedApartment.Floor, FallbackValue='_'}" 
+                                                               Foreground="#1976D2" FontSize="14" FontWeight="Bold"/>
+                                                </StackPanel>
+                                            </Border>
+                                        </WrapPanel>
+                                    </StackPanel>
+                                </Border>
+
+                                <!-- Основная информация -->
+                                <Border Background="White" 
+                                        CornerRadius="12" 
+                                        BorderBrush="#E8ECF0" 
+                                        BorderThickness="1"
+                                        Padding="0" 
+                                        Margin="0,0,0,15">
+                                    <StackPanel>
+                                        <Border Background="#F8F9FA" Padding="15,12" CornerRadius="12,12,0,0">
+                                            <TextBlock Text="📋 Детальная информация" 
+                                                       FontWeight="SemiBold" 
+                                                       FontSize="14"
+                                                       Foreground="#2C3E50"/>
+                                        </Border>
+
+                                        <StackPanel Margin="20">
+                                            <!-- ФИО владельца -->
+                                            <Border Background="#F0F7FF" CornerRadius="8" Padding="12" Margin="0,0,0,10">
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="30"/>
+                                                        <ColumnDefinition Width="*"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <TextBlock Grid.Column="0" Text="👤" FontSize="16" VerticalAlignment="Center"/>
+                                                    <StackPanel Grid.Column="1">
+                                                        <TextBlock Text="Владелец" Foreground="#666" FontSize="11" Margin="0,0,0,2"/>
+                                                        <TextBox Text="{Binding SelectedApartment.FullName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                                                                 BorderThickness="0"
+                                                                 Background="Transparent"
+                                                                 FontSize="14"
+                                                                 Padding="0,5"/>
+                                                    </StackPanel>
+                                                </Grid>
+                                            </Border>
+
+                                            <!-- Телефон -->
+                                            <Border Background="#F0F7FF" CornerRadius="8" Padding="12" Margin="0,0,0,10">
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="30"/>
+                                                        <ColumnDefinition Width="*"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <TextBlock Grid.Column="0" Text="📞" FontSize="16" VerticalAlignment="Center"/>
+                                                    <StackPanel Grid.Column="1">
+                                                        <TextBlock Text="Телефон" Foreground="#666" FontSize="11" Margin="0,0,0,2"/>
+                                                        <TextBox Text="{Binding SelectedApartment.PhoneNumber, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                                                                 BorderThickness="0"
+                                                                 Background="Transparent"
+                                                                 FontSize="14"
+                                                                 Padding="0,5"/>
+                                                    </StackPanel>
+                                                </Grid>
+                                            </Border>
+
+                                            <!-- Автомобиль -->
+                                            <Border Background="#F0F7FF" CornerRadius="8" Padding="12">
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="30"/>
+                                                        <ColumnDefinition Width="*"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <TextBlock Grid.Column="0" Text="🚗" FontSize="16" VerticalAlignment="Center"/>
+                                                    <StackPanel Grid.Column="1">
+                                                        <TextBlock Text="Автомобиль" Foreground="#666" FontSize="11" Margin="0,0,0,2"/>
+                                                        <TextBox Text="{Binding SelectedApartment.Car, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                                                                 BorderThickness="0"
+                                                                 Background="Transparent"
+                                                                 FontSize="14"
+                                                                 Padding="0,5"/>
+                                                    </StackPanel>
+                                                </Grid>
+                                            </Border>
+                                        </StackPanel>
+                                    </StackPanel>
+                                </Border>
+
+                                <!-- Лицевые счета -->
+                                <Border Background="White" 
+                                        CornerRadius="8" 
+                                        BorderBrush="#E0E4E8" 
+                                        BorderThickness="1"
+                                        Padding="20" 
+                                        Margin="0,0,0,15">
+                                    <StackPanel>
+                                        <TextBlock Text="💰 Лицевые счета" 
+                                                   FontSize="16" FontWeight="Bold" Foreground="#2C3E50"
+                                                   Margin="0,0,0,15"/>
+
+                                        <DataGrid ItemsSource="{Binding SelectedApartment.PersonalAccounts}" 
+                                                  AutoGenerateColumns="False" 
+                                                  CanUserAddRows="False"
+                                                  MaxHeight="200" 
+                                                  Margin="0,10">
+                                            <DataGrid.Columns>
+                                                <DataGridTextColumn Header="№ лицевого счета" 
+                                                                    Binding="{Binding AccountNumber}" 
+                                                                    Width="150"/>
+                                                <DataGridTextColumn Header="Владелец" 
+                                                                    Binding="{Binding OwnerName}" 
+                                                                    Width="*"/>
+                                                <DataGridTemplateColumn Header="Действия" Width="120">
+                                                    <DataGridTemplateColumn.CellTemplate>
+                                                        <DataTemplate>
+                                                            <StackPanel Orientation="Horizontal">
+                                                                <Button Content="➕" 
+                                                                        Click="AddAccrualForAccount_Click" 
+                                                                        Tag="{Binding}" 
+                                                                        Width="35" Height="30"
+                                                                        Background="#28A745"
+                                                                        Foreground="White"
+                                                                        FontSize="14"
+                                                                        Margin="0,0,5,0">
+                                                                    <Button.ToolTip>
+                                                                        <ToolTip Content="Начислить"/>
+                                                                    </Button.ToolTip>
+                                                                </Button>
+                                                                <Button Content="🗑️" 
+                                                                        Click="RemoveAccount_Click" 
+                                                                        Tag="{Binding}" 
+                                                                        Width="35" Height="30"
+                                                                        Background="#DC3545"
+                                                                        Foreground="White"
+                                                                        FontSize="14">
+                                                                    <Button.ToolTip>
+                                                                        <ToolTip Content="Удалить"/>
+                                                                    </Button.ToolTip>
+                                                                </Button>
+                                                            </StackPanel>
+                                                        </DataTemplate>
+                                                    </DataGridTemplateColumn.CellTemplate>
+                                                </DataGridTemplateColumn>
+                                            </DataGrid.Columns>
+                                        </DataGrid>
+
+                                        <WrapPanel Margin="0,10,0,0">
+                                            <TextBlock Text="Новый счет:" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                                            <TextBox x:Name="NewAccountNumber" 
+                                                     Width="120" 
+                                                     Height="30"
+                                                     Margin="0,0,10,0"
+                                                     VerticalAlignment="Center"/>
+                                            <TextBlock Text="Владелец:" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                                            <TextBox x:Name="NewOwnerName" 
+                                                     Width="180" 
+                                                     Height="30"
+                                                     Margin="0,0,10,0"
+                                                     VerticalAlignment="Center"/>
+                                            <Button Content="➕ Добавить счет" 
+                                                    Click="AddAccount_Click" 
+                                                    Style="{StaticResource PrimaryButton}"
+                                                    Height="32"/>
+                                        </WrapPanel>
+                                    </StackPanel>
+                                </Border>
+
+                                <!-- Показания счетчиков -->
+                                <Border Background="White" 
+                                        CornerRadius="8" 
+                                        BorderBrush="#E0E4E8" 
+                                        BorderThickness="1"
+                                        Padding="20" 
+                                        Margin="0,0,0,15">
+                                    <StackPanel>
+                                        <TextBlock Text="💧 Показания счетчиков" 
+                                                   FontSize="16" FontWeight="Bold" Foreground="#2C3E50"
+                                                   Margin="0,0,0,15"/>
+
+                                        <DataGrid ItemsSource="{Binding SelectedApartment.MeterReadings}" 
+                                                  AutoGenerateColumns="False" 
+                                                  CanUserAddRows="False"
+                                                  MaxHeight="150" 
+                                                  Margin="0,10">
+                                            <DataGrid.Columns>
+                                                <DataGridTextColumn Header="Дата" 
+                                                                    Binding="{Binding Date, StringFormat=dd.MM.yyyy}" 
+                                                                    Width="100"/>
+                                                <DataGridTextColumn Header="ХВС (м³)" 
+                                                                    Binding="{Binding ColdWater}" 
+                                                                    Width="100"/>
+                                                <DataGridTextColumn Header="ГВС (м³)" 
+                                                                    Binding="{Binding HotWater}" 
+                                                                    Width="100"/>
+                                                <DataGridTemplateColumn Header="Действия" Width="80">
+                                                    <DataGridTemplateColumn.CellTemplate>
+                                                        <DataTemplate>
+                                                            <Button Content="🗑️" 
+                                                                    Click="RemoveReading_Click" 
+                                                                    Tag="{Binding}" 
+                                                                    Style="{StaticResource DangerButton}"/>
+                                                        </DataTemplate>
+                                                    </DataGridTemplateColumn.CellTemplate>
+                                                </DataGridTemplateColumn>
+                                            </DataGrid.Columns>
+                                        </DataGrid>
+
+                                        <WrapPanel Margin="0,10,0,0">
+                                            <TextBlock Text="Дата:" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                                            <DatePicker x:Name="ReadingDate" 
+                                                        SelectedDate="{x:Static sys:DateTime.Today}" 
+                                                        Width="120" 
+                                                        Margin="0,0,15,0"/>
+                                            <TextBlock Text="ХВС:" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                                            <TextBox x:Name="ColdWaterInput" 
+                                                     Width="80" 
+                                                     Margin="0,0,15,0"
+                                                     TextAlignment="Right"/>
+                                            <TextBlock Text="ГВС:" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                                            <TextBox x:Name="HotWaterInput" 
+                                                     Width="80" 
+                                                     Margin="0,0,15,0"
+                                                     TextAlignment="Right"/>
+                                            <Button Content="➕ Добавить показания" 
+                                                    Click="AddReading_Click" 
+                                                    Style="{StaticResource PrimaryButton}"/>
+                                        </WrapPanel>
+                                    </StackPanel>
+                                </Border>
+
+                                <!-- Замена счетчиков -->
+                                <Border Background="White" 
+                                        CornerRadius="8" 
+                                        BorderBrush="#E0E4E8" 
+                                        BorderThickness="1"
+                                        Padding="20" 
+                                        Margin="0,0,0,15">
+                                    <StackPanel>
+                                        <TextBlock Text="🔄 Замена счетчиков" 
+                                                   FontSize="16" FontWeight="Bold" Foreground="#2C3E50"
+                                                   Margin="0,0,0,15"/>
+
+                                        <Expander Header="➕ Добавить запись о замене" IsExpanded="False">
+                                            <StackPanel Margin="0,15,0,0">
+                                                <GroupBox Header="ГВС (горячая вода)" Margin="0,5">
+                                                    <Grid Margin="10">
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="120"/>
+                                                            <ColumnDefinition Width="*"/>
+                                                        </Grid.ColumnDefinitions>
+                                                        <Grid.RowDefinitions>
+                                                            <RowDefinition Height="Auto"/>
+                                                            <RowDefinition Height="Auto"/>
+                                                            <RowDefinition Height="Auto"/>
+                                                            <RowDefinition Height="Auto"/>
+                                                        </Grid.RowDefinitions>
+
+                                                        <TextBlock Text="Номер:" Grid.Row="0" Grid.Column="0" Margin="5"/>
+                                                        <TextBox x:Name="HotWaterMeterNumber" Grid.Row="0" Grid.Column="1" Margin="5" Height="30"/>
+
+                                                        <TextBlock Text="Дата установки:" Grid.Row="1" Grid.Column="0" Margin="5"/>
+                                                        <DatePicker x:Name="HotWaterMeterDate" Grid.Row="1" Grid.Column="1" Margin="5"/>
+
+                                                        <TextBlock Text="Год поверки:" Grid.Row="2" Grid.Column="0" Margin="5"/>
+                                                        <DatePicker x:Name="HotWaterVerificationDate" Grid.Row="2" Grid.Column="1" Margin="5"/>
+
+                                                        <TextBlock Text="Примечание:" Grid.Row="3" Grid.Column="0" Margin="5"/>
+                                                        <TextBox x:Name="HotWaterNote" Grid.Row="3" Grid.Column="1" Margin="5" Height="50" TextWrapping="Wrap"/>
+                                                    </Grid>
+                                                </GroupBox>
+
+                                                <GroupBox Header="ХВС (холодная вода)" Margin="0,10">
+                                                    <Grid Margin="10">
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="120"/>
+                                                            <ColumnDefinition Width="*"/>
+                                                        </Grid.ColumnDefinitions>
+                                                        <Grid.RowDefinitions>
+                                                            <RowDefinition Height="Auto"/>
+                                                            <RowDefinition Height="Auto"/>
+                                                            <RowDefinition Height="Auto"/>
+                                                            <RowDefinition Height="Auto"/>
+                                                        </Grid.RowDefinitions>
+
+                                                        <TextBlock Text="Номер:" Grid.Row="0" Grid.Column="0" Margin="5"/>
+                                                        <TextBox x:Name="ColdWaterMeterNumber" Grid.Row="0" Grid.Column="1" Margin="5" Height="30"/>
+
+                                                        <TextBlock Text="Дата установки:" Grid.Row="1" Grid.Column="0" Margin="5"/>
+                                                        <DatePicker x:Name="ColdWaterMeterDate" Grid.Row="1" Grid.Column="1" Margin="5"/>
+
+                                                        <TextBlock Text="Год поверки:" Grid.Row="2" Grid.Column="0" Margin="5"/>
+                                                        <DatePicker x:Name="ColdWaterVerificationDate" Grid.Row="2" Grid.Column="1" Margin="5"/>
+
+                                                        <TextBlock Text="Примечание:" Grid.Row="3" Grid.Column="0" Margin="5"/>
+                                                        <TextBox x:Name="ColdWaterNote" Grid.Row="3" Grid.Column="1" Margin="5" Height="50" TextWrapping="Wrap"/>
+                                                    </Grid>
+                                                </GroupBox>
+
+                                                <Button Content="💾 Сохранить запись" 
+                                                        Click="AddReplacement_Click" 
+                                                        Style="{StaticResource PrimaryButton}"
+                                                        HorizontalAlignment="Center"
+                                                        Margin="0,10"/>
+                                            </StackPanel>
+                                        </Expander>
+
+                                        <!-- Список замен -->
+                                        <DataGrid ItemsSource="{Binding SelectedApartment.MeterReplacements}" 
+                                                  AutoGenerateColumns="False" 
+                                                  CanUserAddRows="False"
+                                                  MaxHeight="250"
+                                                  Margin="0,15,0,0">
+                                            <DataGrid.Columns>
+                                                <DataGridTextColumn Header="Номер ГВС" Binding="{Binding HotWaterMeterNumber}" Width="130"/>
+                                                <DataGridTextColumn Header="Дата установки ГВС" Binding="{Binding HotWaterMeterDate, StringFormat=dd.MM.yyyy}" Width="110"/>
+                                                <DataGridTextColumn Header="Номер ХВС" Binding="{Binding ColdWaterMeterNumber}" Width="130"/>
+                                                <DataGridTextColumn Header="Дата установки ХВС" Binding="{Binding ColdWaterMeterDate, StringFormat=dd.MM.yyyy}" Width="110"/>
+                                                <DataGridTextColumn Header="Примечание" Binding="{Binding HotWaterNote}" Width="*"/>
+                                                <DataGridTemplateColumn Header="Действия" Width="60">
+                                                    <DataGridTemplateColumn.CellTemplate>
+                                                        <DataTemplate>
+                                                            <Button Content="🗑️" 
+                                                                    Click="RemoveReplacement_Click" 
+                                                                    Tag="{Binding}" 
+                                                                    Style="{StaticResource DangerButton}"/>
+                                                        </DataTemplate>
+                                                    </DataGridTemplateColumn.CellTemplate>
+                                                </DataGridTemplateColumn>
+                                            </DataGrid.Columns>
+                                        </DataGrid>
+                                    </StackPanel>
+                                </Border>
+                            </StackPanel>
+                        </ScrollViewer>
+                    </Grid>
+                </Grid>
+            </TabItem>
+
+            <!-- ========== ВКЛАДКА 2: РЕЕСТР НАЧИСЛЕНИЙ ========== -->
+            <TabItem Header="💰 Реестр начислений" FontSize="14" FontWeight="SemiBold">
+                <Grid Margin="10">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- Панель управления -->
+                    <Border Grid.Row="0" 
+                            Background="White" 
+                            CornerRadius="8" 
+                            BorderBrush="#E0E4E8" 
+                            BorderThickness="1"
+                            Padding="20" 
+                            Margin="0,0,0,15">
+                        <StackPanel>
+                            <TextBlock Text="📊 Параметры реестра" 
+                                       FontSize="16" 
+                                       FontWeight="Bold" 
+                                       Foreground="#2C3E50"
+                                       Margin="0,0,0,15"/>
+
+                            <WrapPanel>
+                                <Border Background="#F0F2F5" CornerRadius="5" Padding="15,5" Margin="0,0,15,10">
+                                    <WrapPanel>
+                                        <TextBlock Text="С:" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                                        <DatePicker x:Name="ReportStartDatePicker" 
+                                                    SelectedDate="{Binding ReportStartDate}" 
+                                                    Width="130"/>
+                                    </WrapPanel>
+                                </Border>
+
+                                <Border Background="#F0F2F5" CornerRadius="5" Padding="15,5" Margin="0,0,15,10">
+                                    <WrapPanel>
+                                        <TextBlock Text="По:" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                                        <DatePicker x:Name="ReportEndDatePicker" 
+                                                    SelectedDate="{Binding ReportEndDate}" 
+                                                    Width="130"/>
+                                    </WrapPanel>
+                                </Border>
+
+                                <Button Content="📊 Сформировать реестр" 
+                                        Click="GenerateReportBtn_Click" 
+                                        Style="{StaticResource PrimaryButton}"
+                                        Margin="0,0,10,10"/>
+
+                                <Button Content="💾 Экспорт в файл" 
+                                        Click="ExportReportBtn_Click" 
+                                        Style="{StaticResource SecondaryButton}"
+                                        Margin="0,0,10,10"/>
+
+                                <Button Content="⚙️ Настройки" 
+                                        Click="SettingsBtn_Click" 
+                                        Style="{StaticResource SecondaryButton}"
+                                        Margin="0,0,10,10"/>
+                            </WrapPanel>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Таблица реестра -->
+                    <Border Grid.Row="1" 
+                            Background="White" 
+                            CornerRadius="8" 
+                            BorderBrush="#E0E4E8" 
+                            BorderThickness="1"
+                            Padding="5">
+                        <DataGrid x:Name="ReportGrid" 
+                                  ItemsSource="{Binding ReportData}" 
+                                  AutoGenerateColumns="False" 
+                                  CanUserAddRows="False"
+                                  IsReadOnly="True"
+                                  Margin="5">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Лицевой счет" 
+                                                    Binding="{Binding AccountNumber}" 
+                                                    Width="110">
+                                    <DataGridTextColumn.ElementStyle>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="FontWeight" Value="Bold"/>
+                                        </Style>
+                                    </DataGridTextColumn.ElementStyle>
+                                </DataGridTextColumn>
+                                <DataGridTextColumn Header="ФИО владельца" 
+                                                    Binding="{Binding FullName}" 
+                                                    Width="220"/>
+                                <DataGridTextColumn Header="Адрес" 
+                                                    Binding="{Binding Address}" 
+                                                    Width="250"/>
+                                <DataGridTextColumn Header="Сумма" 
+                                                    Binding="{Binding Amount, StringFormat={}{0:N2}}" 
+                                                    Width="120">
+                                    <DataGridTextColumn.ElementStyle>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="HorizontalAlignment" Value="Right"/>
+                                            <Setter Property="Foreground" Value="#DC3545"/>
+                                            <Setter Property="FontWeight" Value="Bold"/>
+                                        </Style>
+                                    </DataGridTextColumn.ElementStyle>
+                                </DataGridTextColumn>
+                                <DataGridTextColumn Header="Дата" 
+                                                    Binding="{Binding AccrualDate, StringFormat=dd.MM.yyyy}" 
+                                                    Width="100"/>
+                                <DataGridTextColumn Header="Код услуги" 
+                                                    Binding="{Binding ServiceCode}" 
+                                                    Width="100"/>
+                                <DataGridTextColumn Header="№ квартиры" 
+                                                    Binding="{Binding ApartmentNumber}" 
+                                                    Width="90"/>
+                                <DataGridTextColumn Header="Подъезд" 
+                                                    Binding="{Binding Entrance}" 
+                                                    Width="80"/>
+                                <DataGridTextColumn Header="Этаж" 
+                                                    Binding="{Binding Floor}" 
+                                                    Width="70"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </Border>
+
+                    <!-- Итого -->
+                    <Border Grid.Row="2" 
+                            Background="#F8F9FA" 
+                            CornerRadius="8" 
+                            BorderBrush="#E0E4E8" 
+                            BorderThickness="1"
+                            Padding="15" 
+                            Margin="0,15,0,0">
+                        <WrapPanel HorizontalAlignment="Right">
+                            <TextBlock Text="ИТОГО: " 
+                                       FontSize="18" 
+                                       FontWeight="Bold" 
+                                       Foreground="#2C3E50"/>
+                            <TextBlock Text="{Binding TotalAmount, StringFormat={}{0:N2}}" 
+                                       FontSize="18" 
+                                       FontWeight="Bold" 
+                                       Foreground="#DC3545"
+                                       Margin="5,0"/>
+                            <TextBlock Text="руб." 
+                                       FontSize="18" 
+                                       FontWeight="Bold" 
+                                       Foreground="#2C3E50"/>
+                        </WrapPanel>
+                    </Border>
+                </Grid>
+            </TabItem>
+
+            <!-- ========== ВКЛАДКА 3: НАЧИСЛЕНИЕ КВАРТПЛАТ ========== -->
+            <TabItem Header="📋 Начисление квартплат" FontSize="14" FontWeight="SemiBold">
+                <Grid Margin="10" Background="#F5F7FA">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- Панель управления -->
+
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                        <TextBlock Text="📅 Месяц начисления:" 
+               VerticalAlignment="Center" 
+               FontSize="13" 
+               FontWeight="SemiBold" 
+               Margin="0,0,10,0"/>
+
+                        <ComboBox x:Name="ChargesMonthComboBox"
+                      ItemsSource="{Binding Months}"
+                      SelectedItem="{Binding SelectedMonth}"
+                      VerticalAlignment="Center"
+                      Width="160"
+                      Margin="0,0,10,0"
+                      Style="{StaticResource ModernComboBox}"
+                      IsEditable="False"
+                      DisplayMemberPath="." />
+                    </StackPanel>
+
+                    <!-- Статус загрузки -->
+                    <Border Grid.Row="1" 
+                Background="#E8F4FD" 
+                CornerRadius="8" 
+                Padding="12,8" 
+                Margin="0,0,0,15"
+                BorderBrush="#B8DDF8"
+                BorderThickness="1">
+                        <TextBlock x:Name="ImportStatusText"
+                       Text="{Binding ImportStatus}"
+                       Foreground="#0066CC"
+                       FontSize="12"
+                       FontWeight="SemiBold"/>
+                    </Border>
+
+                    <!-- Карточка с итогами -->
+                    <Border Grid.Row="2" 
+                Background="White" 
+                CornerRadius="10" 
+                Padding="0"
+                Margin="0,0,0,15"
+                BorderBrush="#D1D5DB"
+                BorderThickness="1"
+                Effect="{StaticResource ShadowEffect}">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+
+                            <!-- Заголовок таблицы -->
+                            <Border Grid.Row="0" 
+                        Background="#2C3E50" 
+                        CornerRadius="10,10,0,0"
+                        Padding="15,12">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="📊 Детализация начислений" 
+                                   Foreground="White" 
+                                   FontSize="14" 
+                                   FontWeight="Bold"/>
+                                    <TextBlock Grid.Column="1" 
+                                   Text="Апрель 2026" 
+                                   Foreground="#BDC3C7" 
+                                   FontSize="12"/>
+                                </Grid>
+                            </Border>
+
+                            <!-- Таблица с начислениями -->
+                            <ScrollViewer Grid.Row="1" 
+                              HorizontalScrollBarVisibility="Auto"
+                              VerticalScrollBarVisibility="Auto"
+                              Background="White">
+                                <DataGrid x:Name="ChargesGrid"
+                              ItemsSource="{Binding Charges}"
+                              SelectedItem="{Binding SelectedCharge}"
+                              CanUserAddRows="False"
+                              CanUserDeleteRows="False"
+                              IsReadOnly="False"
+                              AutoGenerateColumns="False"
+                              AlternatingRowBackground="#F9FAFB"
+                              RowHeight="40"
+                              BorderThickness="0"
+                              GridLinesVisibility="Horizontal"
+                              HorizontalGridLinesBrush="#E5E7EB"
+                              VerticalGridLinesBrush="Transparent"
+                              FontSize="11"
+                              MinWidth="3500">
+
+                                    <DataGrid.Columns>
+                                        <!-- ========== 1. ОСНОВНАЯ ИНФОРМАЦИЯ ========== -->
+                                        <DataGridTextColumn Header="№ кв." Binding="{Binding ApartmentNumber}" Width="55" IsReadOnly="True">
+                                            <DataGridTextColumn.ElementStyle>
+                                                <Style TargetType="TextBlock">
+                                                    <Setter Property="FontWeight" Value="Bold"/>
+                                                    <Setter Property="HorizontalAlignment" Value="Center"/>
+                                                </Style>
+                                            </DataGridTextColumn.ElementStyle>
+                                        </DataGridTextColumn>
+
+                                        <DataGridTextColumn Header="Ф.И.О." Binding="{Binding FullName}" Width="180" IsReadOnly="True">
+                                            <DataGridTextColumn.ElementStyle>
+                                                <Style TargetType="TextBlock">
+                                                    <Setter Property="FontSize" Value="11"/>
+                                                </Style>
+                                            </DataGridTextColumn.ElementStyle>
+                                        </DataGridTextColumn>
+
+                                        <DataGridTextColumn Header="Общая площадь, м²" Binding="{Binding TotalArea, StringFormat=N2}" Width="90" IsReadOnly="True">
+                                            <DataGridTextColumn.ElementStyle>
+                                                <Style TargetType="TextBlock">
+                                                    <Setter Property="HorizontalAlignment" Value="Right"/>
+                                                    <Setter Property="FontWeight" Value="SemiBold"/>
+                                                </Style>
+                                            </DataGridTextColumn.ElementStyle>
+                                        </DataGridTextColumn>
+
+                                        <!-- ========== 2. ГВС ========== -->
+                                        <DataGridTextColumn Header="ГВС пред." Binding="{Binding HotWaterPrevious, StringFormat=N0}" Width="80">
+                                            <DataGridTextColumn.ElementStyle>
+                                                <Style TargetType="TextBlock">
+                                                    <Setter Property="HorizontalAlignment" Value="Right"/>
+                                                    <Setter Property="Foreground" Value="#2563EB"/>
+                                                </Style>
+                                            </DataGridTextColumn.ElementStyle>
+                                        </DataGridTextColumn>
+
+                                        <DataGridTextColumn Header="ГВС тек." Binding="{Binding HotWaterCurrent, StringFormat=N0}" Width="80">
+                                            <DataGridTextColumn.ElementStyle>
+                                                <Style TargetType="TextBlock">
+                                                    <Setter Property="HorizontalAlignment" Value="Right"/>
+                                                    <Setter Property="Foreground" Value="#2563EB"/>
+                                                    <Setter Property="FontWeight" Value="Bold"/>
+                                                </Style>
+                                            </DataGridTextColumn.ElementStyle>
+                                        </DataGridTextColumn>
+
+                                        <DataGridTextColumn Header="ГВС расход" Binding="{Binding HotWaterConsumption, StringFormat=N0}" Width="80">
+                                            <DataGridTextColumn.ElementStyle>
+                                                <Style TargetType="TextBlock">
+                                                    <Setter Property="HorizontalAlignment" Value="Right"/>
+                                                    <Setter Property="Foreground" Value="#059669"/>
+                                                    <Setter Property="FontWeight" Value="SemiBold"/>
+                                                </Style>
+                                            </DataGridTextColumn.ElementStyle>
+                                        </DataGridTextColumn>
+
+                                        <!-- ========== 3. ХВС ========== -->
+                                        <DataGridTextColumn Header="ХВС пред." Binding="{Binding ColdWaterPrevious, StringFormat=N0}" Width="80">
+                                            <DataGridTextColumn.ElementStyle>
+                                                <Style TargetType="TextBlock">
+                                                    <Setter Property="HorizontalAlignment" Value="Right"/>
+                                                    <Setter Property="Foreground" Value="#7C3AED"/>
+                                                </Style>
+                                            </DataGridTextColumn.ElementStyle>
+                                        </DataGridTextColumn>
+
+                                        <DataGridTextColumn Header="ХВС тек." Binding="{Binding ColdWaterCurrent, StringFormat=N0}" Width="80">
+                                            <DataGridTextColumn.ElementStyle>
+                                                <Style TargetType="TextBlock">
+                                                    <Setter Property="HorizontalAlignment" Value="Right"/>
+                                                    <Setter Property="Foreground" Value="#7C3AED"/>
+                                                    <Setter Property="FontWeight" Value="Bold"/>
+                                                </Style>
+                                            </DataGridTextColumn.ElementStyle>
+                                        </DataGridTextColumn>
+
+                                        <DataGridTextColumn Header="ХВС расход" Binding="{Binding ColdWaterConsumption, StringFormat=N0}" Width="80">
+                                            <DataGridTextColumn.ElementStyle>
+                                                <Style TargetType="TextBlock">
+                                                    <Setter Property="HorizontalAlignment" Value="Right"/>
+                                                    <Setter Property="Foreground" Value="#059669"/>
+                                                    <Setter Property="FontWeight" Value="SemiBold"/>
+                                                </Style>
+                                            </DataGridTextColumn.ElementStyle>
+                                        </DataGridTextColumn>
+
+                                        <!-- ========== 4. НАЧАЛЬНОЕ САЛЬДО ========== -->
+                                        <DataGridTextColumn Header="С-до Д-т" Binding="{Binding BalanceStartDebit, StringFormat=N2}" Width="100">
+                                            <DataGridTextColumn.ElementStyle>
+                                                <Style TargetType="TextBlock">
+                                                    <Setter Property="HorizontalAlignment" Value="Right"/>
+                                                    <Setter Property="Foreground" Value="#DC2626"/>
+                                                </Style>
+                                            </DataGridTextColumn.ElementStyle>
+                                        </DataGridTextColumn>
+
+                                        <DataGridTextColumn Header="С-до К-т" Binding="{Binding BalanceStartCredit, StringFormat=N2}" Width="100">
+                                            <DataGridTextColumn.ElementStyle>
+                                                <Style TargetType="TextBlock">
+                                                    <Setter Property="HorizontalAlignment" Value="Right"/>
+                                                    <Setter Property="Foreground" Value="#059669"/>
+                                                </Style>
+                                            </DataGridTextColumn.ElementStyle>
+                                        </DataGridTextColumn>
+
+                                        <!-- ========== 5. НАЧИСЛЕНИЯ ПО СТАТЬЯМ ========== -->
+                                        <DataGridTextColumn Header="Содержание, ₽" Binding="{Binding Maintenance, StringFormat=N2}" Width="100">
+                                            <DataGridTextColumn.ElementStyle>
+                                                <Style TargetType="TextBlock">
+                                                    <Setter Property="HorizontalAlignment" Value="Right"/>
+                                                </Style>
+                                            </DataGridTextColumn.ElementStyle>
+                                        </DataGridTextColumn>
+
+                                        <DataGridTextColumn Header="Канализация, ₽" Binding="{Binding Sewage, StringFormat=N2}" Width="100">
+                                            <DataGridTextColumn.ElementStyle>
+                                                <Style TargetType="TextBlock">
+                                                    <Setter Property="HorizontalAlignment" Value="Right"/>
+                                                </Style>
+                                            </DataGridTextColumn.ElementStyle>
+                                        </DataGridTextColumn>
+
+                                        <DataGridTextColumn Header="Лифт, ₽" Binding="{Binding Elevator, StringFormat=N2}" Width="90">
+                                            <DataGridTextColumn.ElementStyle>
+                                                <Style TargetType="TextBlock">
+                                                    <Setter Property="HorizontalAlignment" Value="Right"/>
+                                                </Style>
+                                            </DataGridTextColumn.ElementStyle>
+                                        </DataGridTextColumn>
+
+                                        <DataGridTextColumn Header="ГВС, ₽" Binding="{Binding HotWater, StringFormat=N2}" Width="90">
+                                            <DataGridTextColumn.ElementStyle>
+                                                <Style TargetType="TextBlock">
+                                                    <Setter Property="HorizontalAlignment" Value="Right"/>
+                                                </Style>
+                                            </DataGridTextColumn.ElementStyle>
+                                        </DataGridTextColumn>
+
+                                        <DataGridTextColumn Header="СОИ ГВС, ₽" Binding="{Binding HotWaterSoi, StringFormat=N2}" Width="100">
+                                            <DataGridTextColumn.ElementStyle>
+                                                <Style TargetType="TextBlock">
+                                                    <Setter Property="HorizontalAlignment" Value="Right"/>
+                                                </Style>
+                                            </DataGridTextColumn.ElementStyle>
+                                        </DataGridTextColumn>
+
+                                        <DataGridTextColumn Header="ХВС, ₽" Binding="{Binding ColdWater, StringFormat=N2}" Width="90">
+                                            <DataGridTextColumn.ElementStyle>
+                                                <Style TargetType="TextBlock">
+                                                    <Setter Property="HorizontalAlignment" Value="Right"/>
+                                                </Style>
+                                            </DataGridTextColumn.ElementStyle>
+                                        </DataGridTextColumn>
+
+                                        <DataGridTextColumn Header="СОИ ХВС, ₽" Binding="{Binding ColdWaterSoi, StringFormat=N2}" Width="100">
+                                            <DataGridTextColumn.ElementStyle>
+                                                <Style TargetType="TextBlock">
+                                                    <Setter Property="HorizontalAlignment" Value="Right"/>
+                                                </Style>
+                                            </DataGridTextColumn.ElementStyle>
+                                        </DataGridTextColumn>
+
+                                        <DataGridTextColumn Header="СОИ э/э, ₽" Binding="{Binding ElectricitySoi, StringFormat=N2}" Width="100">
+                                            <DataGridTextColumn.ElementStyle>
+                                                <Style TargetType="TextBlock">
+                                                    <Setter Property="HorizontalAlignment" Value="Right"/>
+                                                </Style>
+                                            </DataGridTextColumn.ElementStyle>
+                                        </DataGridTextColumn>
+
+                                        <!-- ========== 6. ИТОГО НАЧИСЛЕНО ========== -->
+                                        <DataGridTextColumn Header="Начислено, ₽" Binding="{Binding TotalAccrued, StringFormat=N2}" Width="120">
+                                            <DataGridTextColumn.ElementStyle>
+                                                <Style TargetType="TextBlock">
+                                                    <Setter Property="Foreground" Value="#059669"/>
+                                                    <Setter Property="FontWeight" Value="Bold"/>
+                                                    <Setter Property="HorizontalAlignment" Value="Right"/>
+                                                    <Setter Property="FontSize" Value="12"/>
+                                                </Style>
+                                            </DataGridTextColumn.ElementStyle>
+                                        </DataGridTextColumn>
+
+                                        <!-- ========== 7. ОПЛАТА ========== -->
+                                        <DataGridTextColumn Header="Оплачено, ₽" Binding="{Binding PaidAmount, StringFormat=N2}" Width="110">
+                                            <DataGridTextColumn.ElementStyle>
+                                                <Style TargetType="TextBlock">
+                                                    <Setter Property="HorizontalAlignment" Value="Right"/>
+                                                    <Setter Property="Foreground" Value="#7C3AED"/>
+                                                </Style>
+                                            </DataGridTextColumn.ElementStyle>
+                                        </DataGridTextColumn>
+
+                                        <DataGridTextColumn Header="Дата оплаты" Binding="{Binding PaymentDate, StringFormat=dd.MM.yyyy}" Width="100"/>
+
+                                        <!-- ========== 8. ДОЛГИ И ПЕНИ ========== -->
+                                        <DataGridTextColumn Header="Д-т без пеней" Binding="{Binding DebtWithoutPenalty, StringFormat=N2}" Width="110">
+                                            <DataGridTextColumn.ElementStyle>
+                                                <Style TargetType="TextBlock">
+                                                    <Setter Property="HorizontalAlignment" Value="Right"/>
+                                                </Style>
+                                            </DataGridTextColumn.ElementStyle>
+                                        </DataGridTextColumn>
+
+                                        <DataGridTextColumn Header="Начисл. за прошлый месяц" Binding="{Binding PreviousMonthAccrual, StringFormat=N2}" Width="130">
+                                            <DataGridTextColumn.ElementStyle>
+                                                <Style TargetType="TextBlock">
+                                                    <Setter Property="HorizontalAlignment" Value="Right"/>
+                                                </Style>
+                                            </DataGridTextColumn.ElementStyle>
+                                        </DataGridTextColumn>
+
+                                        <DataGridTextColumn Header="Сумма задолж-ности на пеня" Binding="{Binding PenaltyDebt, StringFormat=N2}" Width="140">
+                                            <DataGridTextColumn.ElementStyle>
+                                                <Style TargetType="TextBlock">
+                                                    <Setter Property="HorizontalAlignment" Value="Right"/>
+                                                    <Setter Property="Foreground" Value="#DC2626"/>
+                                                </Style>
+                                            </DataGridTextColumn.ElementStyle>
+                                        </DataGridTextColumn>
+
+                                        <DataGridTextColumn Header="Пеня, ₽" Binding="{Binding Penalty, StringFormat=N2}" Width="90">
+                                            <DataGridTextColumn.ElementStyle>
+                                                <Style TargetType="TextBlock">
+                                                    <Setter Property="HorizontalAlignment" Value="Right"/>
+                                                    <Setter Property="Foreground" Value="#DC2626"/>
+                                                    <Setter Property="FontWeight" Value="SemiBold"/>
+                                                </Style>
+                                            </DataGridTextColumn.ElementStyle>
+                                        </DataGridTextColumn>
+
+                                        <!-- ========== 9. КОМИССИЯ ========== -->
+                                        <DataGridTextColumn Header="Возмещение по комиссии, ₽" Binding="{Binding CommissionReimbursement, StringFormat=N2}" Width="140">
+                                            <DataGridTextColumn.ElementStyle>
+                                                <Style TargetType="TextBlock">
+                                                    <Setter Property="HorizontalAlignment" Value="Right"/>
+                                                </Style>
+                                            </DataGridTextColumn.ElementStyle>
+                                        </DataGridTextColumn>
+
+                                        <!-- ========== 10. ИТОГОВЫЕ САЛЬДО ========== -->
+                                        <DataGridTextColumn Header="Итого Д-т без пеней" Binding="{Binding TotalDebit, StringFormat=N2}" Width="130">
+                                            <DataGridTextColumn.ElementStyle>
+                                                <Style TargetType="TextBlock">
+                                                    <Setter Property="HorizontalAlignment" Value="Right"/>
+                                                    <Setter Property="FontWeight" Value="SemiBold"/>
+                                                </Style>
+                                            </DataGridTextColumn.ElementStyle>
+                                        </DataGridTextColumn>
+
+                                        <DataGridTextColumn Header="С-до на кон. Д-т" Binding="{Binding BalanceEndDebit, StringFormat=N2}" Width="120">
+                                            <DataGridTextColumn.ElementStyle>
+                                                <Style TargetType="TextBlock">
+                                                    <Setter Property="HorizontalAlignment" Value="Right"/>
+                                                    <Setter Property="Foreground" Value="#DC2626"/>
+                                                    <Setter Property="FontWeight" Value="Bold"/>
+                                                </Style>
+                                            </DataGridTextColumn.ElementStyle>
+                                        </DataGridTextColumn>
+
+                                        <DataGridTextColumn Header="С-до на кон. К-т" Binding="{Binding BalanceEndCredit, StringFormat=N2}" Width="120">
+                                            <DataGridTextColumn.ElementStyle>
+                                                <Style TargetType="TextBlock">
+                                                    <Setter Property="HorizontalAlignment" Value="Right"/>
+                                                    <Setter Property="Foreground" Value="#059669"/>
+                                                    <Setter Property="FontWeight" Value="Bold"/>
+                                                </Style>
+                                            </DataGridTextColumn.ElementStyle>
+                                        </DataGridTextColumn>
+
+                                        <!-- ========== 11. ДОЛГ И СТАТУС ========== -->
+                                        <DataGridTextColumn Header="Долг, ₽" Binding="{Binding Debt, StringFormat=N2}" Width="100">
+                                            <DataGridTextColumn.ElementStyle>
+                                                <Style TargetType="TextBlock">
+                                                    <Setter Property="Foreground" Value="#DC2626"/>
+                                                    <Setter Property="FontWeight" Value="Bold"/>
+                                                    <Setter Property="HorizontalAlignment" Value="Right"/>
+                                                </Style>
+                                            </DataGridTextColumn.ElementStyle>
+                                        </DataGridTextColumn>
+
+                                        <DataGridTextColumn Header="Статус" Binding="{Binding StatusText}" Width="110">
+                                            <DataGridTextColumn.ElementStyle>
+                                                <Style TargetType="TextBlock">
+                                                    <Setter Property="HorizontalAlignment" Value="Center"/>
+                                                    <Setter Property="FontWeight" Value="SemiBold"/>
+                                                </Style>
+                                            </DataGridTextColumn.ElementStyle>
+                                        </DataGridTextColumn>
+                                    </DataGrid.Columns>
+                                </DataGrid>
+                            </ScrollViewer>
+                        </Grid>
+                    </Border>
+
+                    <!-- Панель с итогами внизу -->
+                    <Border Grid.Row="3" 
+                Background="White" 
+                CornerRadius="10" 
+                Padding="15,12"
+                Margin="0,10,0,0"
+                BorderBrush="#D1D5DB"
+                BorderThickness="1"
+                Effect="{StaticResource ShadowEffect}">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <Border Grid.Column="0" Background="#E8F4FD" CornerRadius="8" Padding="12,8" Margin="0,0,10,0">
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                    <TextBlock Text="💰 ВСЕГО НАЧИСЛЕНО: " FontSize="13" FontWeight="SemiBold"/>
+                                    <TextBlock x:Name="TotalAccruedText" Text="{Binding TotalAccruedSum, StringFormat=N2}" FontSize="16" FontWeight="Bold" Foreground="#059669"/>
+                                    <TextBlock Text=" ₽" FontSize="13" FontWeight="SemiBold" Foreground="#059669"/>
+                                </StackPanel>
+                            </Border>
+
+                            <Border Grid.Column="1" Background="#EDE9FE" CornerRadius="8" Padding="12,8" Margin="5,0">
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                    <TextBlock Text="💳 ВСЕГО ОПЛАЧЕНО: " FontSize="13" FontWeight="SemiBold"/>
+                                    <TextBlock x:Name="TotalPaidText" Text="{Binding TotalPaidSum, StringFormat=N2}" FontSize="16" FontWeight="Bold" Foreground="#7C3AED"/>
+                                    <TextBlock Text=" ₽" FontSize="13" FontWeight="SemiBold" Foreground="#7C3AED"/>
+                                </StackPanel>
+                            </Border>
+
+                            <Border Grid.Column="2" Background="#FEE2E2" CornerRadius="8" Padding="12,8" Margin="5,0">
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                    <TextBlock Text="⚠ ОБЩАЯ ЗАДОЛЖЕННОСТЬ: " FontSize="13" FontWeight="SemiBold"/>
+                                    <TextBlock x:Name="TotalDebtText" Text="{Binding TotalDebtSum, StringFormat=N2}" FontSize="16" FontWeight="Bold" Foreground="#DC2626"/>
+                                    <TextBlock Text=" ₽" FontSize="13" FontWeight="SemiBold" Foreground="#DC2626"/>
+                                </StackPanel>
+                            </Border>
+
+                            <Border Grid.Column="3" Background="#FEF3C7" CornerRadius="8" Padding="12,8" Margin="10,0,0,0">
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                    <TextBlock Text="📊 ВСЕГО КВАРТИР: " FontSize="13" FontWeight="SemiBold"/>
+                                    <TextBlock x:Name="TotalApartmentsText" Text="{Binding Charges.Count}" FontSize="16" FontWeight="Bold" Foreground="#D97706"/>
+                                </StackPanel>
+                            </Border>
+                        </Grid>
+                    </Border>
+                </Grid>
+            </TabItem>
+
+        </TabControl>
+    </Grid>
+</Window>
