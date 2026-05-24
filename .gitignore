@@ -1,18 +1,30 @@
-```
-# Editor/IDE files
-.vscode/
+# Build artifacts
+bin/
+obj/
+*.exe
+*.dll
+*.pdb
+*.nupkg
 
-# Logs and temp files
+# Dependencies
+packages/
+node_modules/
+vendor/
+
+# Logs
 *.log
-*.tmp
-*.swp
 
-# System files
-.DS_Store
-Thumbs.db
+# User-specific files
+.vs/
+*.user
+*.userosscache
+*.suo
 
-# Environment files
+# Environment specific
 .env
 .env.local
-*.env.*
-```
+*.local.settings.json
+
+# OS generated files
+.DS_Store
+Thumbs.db

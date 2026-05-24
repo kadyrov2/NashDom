@@ -335,9 +335,14 @@ namespace NashDom.Views
                     }
                 }
 
-                // Здесь должна быть логика загрузки данных начислений
-                // Например:
-                // await _chargesViewModel.LoadChargesAsync(GetSelectedMonthAsDateTime());
+                // Получаем выбранный месяц из ComboBox
+                string selectedMonthName = ChargesMonthComboBox?.SelectedItem as string;
+                
+                // Загружаем данные начислений для выбранного месяца
+                if (!string.IsNullOrEmpty(selectedMonthName))
+                {
+                    await _chargesViewModel.LoadChargesForMonthAsync(selectedMonthName);
+                }
             }
             catch (Exception ex)
             {
@@ -357,6 +362,12 @@ namespace NashDom.Views
         {
             // Обработчик изменения выбранной вкладки
             // Можно добавить логику при переключении между вкладками
+        }
+
+        private async void ChargesMonth_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            // При выборе месяца загружаем данные начислений
+            await LoadChargesDataAsync();
         }
 
         // Рассчитать и сохранить начисления для всех квартир

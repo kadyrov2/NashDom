@@ -986,7 +986,8 @@
                       Margin="0,0,10,0"
                       Style="{StaticResource ModernComboBoxStyle}"
                       IsEditable="False"
-                      DisplayMemberPath="." />
+                      DisplayMemberPath="."
+                      SelectionChanged="ChargesMonth_SelectionChanged" />
                     </StackPanel>
 
                     <!-- Статус загрузки -->

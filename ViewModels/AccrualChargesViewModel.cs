@@ -130,14 +130,27 @@ namespace NashDom.ViewModels
 
   
 
-        public async Task LoadChargesForMonthAsync()
+        public async Task LoadChargesForMonthAsync(string monthName)
         {
             try
             {
                 IsLoading = true;
                 ImportStatus = "Загрузка данных...";
 
-                var charges = await _dbService.GetAccrualChargesByMonthAsync(SelectedMonth);
+                // Преобразуем имя месяца в DateTime
+                var monthIndex = Array.IndexOf(new[] 
+                { 
+                    "Январь", "Февраль", "Март", "Апрель", 
+                    "Май", "Июнь", "Июль", "Август", 
+                    "Сентябрь", "Октябрь", "Ноябрь", "Декабрь" 
+                }, monthName);
+
+                if (monthIndex < 0) monthIndex = DateTime.Now.Month - 1;
+                
+                var selectedDate = new DateTime(DateTime.Now.Year, monthIndex + 1, 1);
+                SelectedMonth = selectedDate;
+
+                var charges = await _dbService.GetAccrualChargesByMonthAsync(selectedDate);
 
                 await Application.Current.Dispatcher.InvokeAsync(() =>
                 {
@@ -148,7 +161,7 @@ namespace NashDom.ViewModels
                     }
 
                     CalculateTotals();
-                    ImportStatus = $"Загружено {Charges.Count} записей за {SelectedMonth:MMMM yyyy}";
+                    ImportStatus = $"Загружено {Charges.Count} записей за {selectedDate:MMMM yyyy}";
                 });
             }
             catch (Exception ex)
@@ -164,6 +177,11 @@ namespace NashDom.ViewModels
             {
                 IsLoading = false;
             }
+        }
+
+        public async Task LoadChargesForMonthAsync()
+        {
+            await LoadChargesForMonthAsync(SelectedMonth.ToString("MMMM"));
         }
 
         private void CalculateTotals()
