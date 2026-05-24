@@ -167,7 +167,31 @@ namespace NashDom.ViewModels
             {
                 Application.Current.Dispatcher.Invoke(() =>
                 {
-                    MessageBox.Show($"Ошибка загрузки данных: {ex.Message}", "Ошибка",
+                    string errorMessage = $"Ошибка загрузки данных: {ex.Message}";
+                    
+                    if (ex.InnerException != null)
+                    {
+                        errorMessage += $"\n\nВнутренняя ошибка: {ex.InnerException.Message}";
+                        
+                        // Проверяем на временную ошибку подключения
+                        if (ex.InnerException.Message.Contains("transient") || 
+                            ex.InnerException.Message.Contains("connection") ||
+                            ex.InnerException.Message.Contains("timeout") ||
+                            ex.InnerException.Message.Contains("08"))
+                        {
+                            errorMessage += "\n\n" +
+                                "Это временная ошибка подключения к базе данных.\n\n" +
+                                "Возможные причины:\n" +
+                                "1. Сервер PostgreSQL не запущен\n" +
+                                "2. Неправильные параметры подключения\n" +
+                                "3. Сетевые проблемы\n\n" +
+                                "Проверьте, что Docker-контейнер с PostgreSQL запущен:\n" +
+                                "docker-compose up -d\n\n" +
+                                "Или подождите несколько секунд и попробуйте снова.";
+                        }
+                    }
+                    
+                    MessageBox.Show(errorMessage, "Ошибка",
                         MessageBoxButton.OK, MessageBoxImage.Error);
                 });
             }
