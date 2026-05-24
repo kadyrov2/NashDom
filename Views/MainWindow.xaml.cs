@@ -353,6 +353,12 @@ namespace NashDom.Views
             settingsWindow.ShowDialog();
         }
 
+        private void TabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            // Обработчик изменения выбранной вкладки
+            // Можно добавить логику при переключении между вкладками
+        }
+
         // Рассчитать и сохранить начисления для всех квартир
         public async Task CalculateAndSaveAccrualsAsync(DateTime month)
         {
