@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using NashDom.Models;
+using Npgsql;
 
 namespace NashDom.Data
 {
@@ -16,7 +17,17 @@ namespace NashDom.Data
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
-            optionsBuilder.UseNpgsql("Host=localhost;Port=5432;Database=NashDomDB;Username=postgres;Password=postgres123");
+            
+            var connectionString = "Host=localhost;Port=5432;Database=NashDomDB;Username=postgres;Password=postgres123";
+            
+            optionsBuilder.UseNpgsql(connectionString, npgsqlOptions =>
+            {
+                // Добавляем политику повторных попыток для временных ошибок
+                npgsqlOptions.EnableRetryOnFailure(
+                    maxRetryCount: 5,
+                    maxRetryDelay: TimeSpan.FromSeconds(30),
+                    errorCodesToAdd: null);
+            });
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
