@@ -263,7 +263,7 @@
         </Style>
 
         <!-- Стиль для ComboBox -->
-        <Style TargetType="ComboBox">
+        <Style x:Key="ModernComboBoxStyle" TargetType="ComboBox">
             <Setter Property="BorderBrush" Value="#D1D5DB"/>
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="Padding" Value="8,6"/>
@@ -984,7 +984,7 @@
                       VerticalAlignment="Center"
                       Width="160"
                       Margin="0,0,10,0"
-                      Style="{StaticResource ModernComboBox}"
+                      Style="{StaticResource ModernComboBoxStyle}"
                       IsEditable="False"
                       DisplayMemberPath="." />
                     </StackPanel>
