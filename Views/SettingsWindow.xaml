@@ -1,0 +1,56 @@
+<Window x:Class="NashDom.Views.SettingsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Настройки организации" 
+        Height="875" 
+        Width="500"
+        WindowStartupLocation="CenterOwner">
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="20">
+            <TextBlock Text="РЕКВИЗИТЫ ОРГАНИЗАЦИИ" FontWeight="Bold" FontSize="16" Margin="0,0,0,15"/>
+
+            <TextBlock Text="Шаблон:" Margin="0,5,0,0"/>
+            <TextBox x:Name="TemplateNameBox" Margin="0,3,0,10" Height="30"/>
+
+            <TextBlock Text="Наименование организации:"/>
+            <TextBox x:Name="OrganizationNameBox" Margin="0,3,0,10" Height="30"/>
+
+            <TextBlock Text="ИНН:"/>
+            <TextBox x:Name="InnBox" Margin="0,3,0,10" Height="30"/>
+
+            <TextBlock Text="КПП:"/>
+            <TextBox x:Name="KppBox" Margin="0,3,0,10" Height="30"/>
+
+            <TextBlock Text="БИК:"/>
+            <TextBox x:Name="BikBox" Margin="0,3,0,10" Height="30"/>
+
+            <TextBlock Text="Корреспондентский счет:"/>
+            <TextBox x:Name="CorrespondentAccountBox" Margin="0,3,0,10" Height="30"/>
+
+            <TextBlock Text="Наименование банка:"/>
+            <TextBox x:Name="BankNameBox" Margin="0,3,0,10" Height="30"/>
+
+            <TextBlock Text="Расчетный счет:"/>
+            <TextBox x:Name="SettlementAccountBox" Margin="0,3,0,10" Height="30"/>
+
+            <TextBlock Text="Код услуги:"/>
+            <TextBox x:Name="ServiceCodeBox" Margin="0,3,0,10" Height="30"/>
+
+            <TextBlock Text="Верхний колонтитул (необязательно):" Margin="0,10,0,0"/>
+            <TextBox x:Name="HeaderTextBox" Height="60" TextWrapping="Wrap" 
+                     AcceptsReturn="True" Margin="0,3,0,10"/>
+
+            <TextBlock Text="Нижний колонтитул (необязательно):"/>
+            <TextBox x:Name="FooterTextBox" Height="60" TextWrapping="Wrap" 
+                     AcceptsReturn="True" Margin="0,3,0,20"/>
+
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                <Button x:Name="SaveButton" Content="Сохранить" Width="100" Height="35" 
+                        Margin="5" Click="SaveButton_Click" Background="#007ACC" Foreground="White"/>
+                <Button x:Name="CancelButton" Content="Отмена" Width="100" Height="35" 
+                        Margin="5" Click="CancelButton_Click"/>
+            </StackPanel>
+        </StackPanel>
+    </ScrollViewer>
+</Window>

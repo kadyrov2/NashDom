@@ -1,0 +1,57 @@
+```
+# Compiled and build artifacts
+*.exe
+*.dll
+*.so
+*.a
+*.obj
+*.out
+bin/
+obj/
+Debug/
+Release/
+
+# Dependencies
+packages/
+node_modules/
+venv/
+.venv/
+__pycache__/
+*.egg-info/
+dist/
+build/
+target/
+.gradle/
+
+# Logs and temp files
+*.log
+*.tmp
+*.swp
+*.swo
+
+# Environment
+.env
+.env.local
+*.env.*
+
+# Editors
+.vscode/
+.idea/
+*.userprefs
+*.user
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Testing
+coverage/
+htmlcov/
+.coverage
+*.coverage
+
+# Build outputs
+output/
+app.publish/
+publish/
+```
